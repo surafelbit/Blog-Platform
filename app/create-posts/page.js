@@ -15,7 +15,7 @@ export default function CreatePost() {
 
   // const { showModal, hideModal } = useModal();
   const [tempNickname, setTempNickname] = useState("");
-  const [nickname, setNickname] = useState("");
+  // const [nickname, setNickname] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
