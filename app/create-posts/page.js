@@ -77,9 +77,7 @@ export default function CreatePost() {
       alert("Something went wrong");
     }
   };
-  function closer() {
-    setIsModalOpen(false);
-  }
+
   return (
     <div>
       <div className="max-w-xl mx-auto p-6 bg-white rounded-md shadow-md">
