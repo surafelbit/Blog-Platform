@@ -60,11 +60,15 @@ export default function CreatePost() {
       nickname: localStorage.getItem("nickname"),
     };
     try {
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(sendData),
-      });
+      const res = await fetch(
+        "https://blog-platform-two-omega.vercel.app/api/external-post",
+        {
+          // const res = await fetch("/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sendData),
+        }
+      );
 
       if (res.ok) {
         alert("Post created!");
