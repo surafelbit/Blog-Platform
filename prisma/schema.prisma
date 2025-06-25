@@ -14,7 +14,8 @@ model Post {
   catagory String
   date     DateTime? @default(now())
   image    String?
-  nickname String
+  nickname String?
+  
 }
 
 enum Category {

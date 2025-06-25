@@ -12,20 +12,37 @@ export async function OPTIONS() {
   return withCORSHeaders(new NextResponse(null, { status: 200 }));
 }
 // GET all posts
+// export async function GET() {
+//   try {
+//     const posts = await prisma.post.findMany();
+//     return NextResponse.json(posts);
+//   } catch (error) {
+//     return NextResponse.json(
+//       {
+//         error: "Failed to fetch posts",
+//         details: error.message,
+//       },
+//       { status: 500 }
+//     );
+//   }
+// }
 export async function GET() {
   try {
     const posts = await prisma.post.findMany();
-    return NextResponse.json(posts);
+    return withCORSHeaders(NextResponse.json(posts, { status: 200 }));
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: "Failed to fetch posts",
-        details: error.message,
-      },
-      { status: 500 }
+    return withCORSHeaders(
+      NextResponse.json(
+        {
+          error: "Failed to fetch posts",
+          details: error.message,
+        },
+        { status: 500 }
+      )
     );
   }
 }
+
 export async function POST(request) {
   try {
     const formData = await request.formData();
