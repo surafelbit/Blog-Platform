@@ -1,6 +1,8 @@
 // app/api/posts/route.js
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
+import { cloudinary } from "@/lib/cloudinary";
+
 // GET all posts
 export async function GET() {
   try {
@@ -16,30 +18,56 @@ export async function GET() {
     );
   }
 }
-
 export async function POST(request) {
   try {
-    const { title, blog, catagory, image, nickname } = await request.json();
+    const formData = await request.formData();
 
-    if (!title || !blog || !catagory || !image) {
+    const title = formData.get("title");
+    const blog = formData.get("blog");
+    const catagory = formData.get("catagory");
+    const nickname = formData.get("nickname");
+    const file = formData.get("image");
+
+    if (!title || !blog || !catagory || !nickname || !file) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        {
+          error:
+            "All fields (title, blog, catagory, nickname, image) are required",
+        },
         { status: 400 }
       );
     }
 
-    const post = await prisma.post.create({
-      data: { title, blog, catagory, image, nickname },
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const uploadRes = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: "blog-posts" }, (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        })
+        .end(buffer);
     });
 
-    return NextResponse.json(post, { status: 201 });
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      {
-        error: "Error creating post",
-        details: error.message, // No Error type checking
+    const newPost = await prisma.post.create({
+      data: {
+        title,
+        blog,
+        catagory,
+        image: uploadRes.secure_url,
+        nickname,
       },
+    });
+
+    return NextResponse.json(
+      { message: "Post created successfully", post: newPost },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error creating post:", error);
+    return NextResponse.json(
+      { error: "Failed to create post", details: error.message },
       { status: 500 }
     );
   }

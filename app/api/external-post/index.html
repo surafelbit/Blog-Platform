@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,17 +12,20 @@
       async function postToBlog() {
         try {
           console.log("this is something that should work ");
-          const res = await fetch("http://localhost:3000/api/external-post", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: "Post from External another Site",
-              blog: "Hello! This was posted from another localhost site.",
-              catagory: "TECHNOLOGY",
-              image: "",
-              nickname: "someone",
-            }),
-          });
+          const res = await fetch(
+            "https://blog-platform-two-omega.vercel.app/api/external-post",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                title: "Post from External another Site",
+                blog: "Hello! This was posted from another localhost site.",
+                catagory: "TECHNOLOGY",
+                image: "",
+                nickname: "someone",
+              }),
+            }
+          );
 
           const data = await res.json(); // ✅ Read JSON only once
 
@@ -40,6 +43,75 @@
           alert("Failed to send blog post: right " + err.message);
         }
       }
+    </script>
+  </body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>External Blog Poster (FormData)</title>
+  </head>
+  <body>
+    <h1>External Site: Post to Localhost API</h1>
+
+    <form id="blogForm">
+      <input type="text" name="title" placeholder="Title" required /><br />
+      <textarea name="blog" placeholder="Blog Content" required></textarea
+      ><br />
+      <input
+        type="text"
+        name="catagory"
+        placeholder="Category"
+        value="TECHNOLOGY"
+      /><br />
+      <input
+        type="text"
+        name="nickname"
+        placeholder="Nickname"
+        required
+      /><br />
+      <input type="file" name="image" accept="image/*" required /><br />
+      <button type="submit">Post Blog to Local Next.js Blog</button>
+    </form>
+
+    <script>
+      document
+        .getElementById("blogForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const form = e.target;
+          const formData = new FormData();
+
+          formData.append("title", form.title.value);
+          formData.append("blog", form.blog.value);
+          formData.append("catagory", form.catagory.value || "TECHNOLOGY");
+          formData.append("nickname", form.nickname.value);
+          formData.append("image", form.image.files[0]);
+
+          try {
+            const res = await fetch("http://localhost:3000/api/external-post", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+              alert(
+                "Failed to send blog post: " + (data.error || "Unknown error")
+              );
+              return;
+            }
+
+            alert("Blog post sent successfully!");
+            console.log("Server response:", data);
+          } catch (err) {
+            console.error("Error sending blog post:", err);
+            alert("Failed to send blog post: " + err.message);
+          }
+        });
     </script>
   </body>
 </html>
