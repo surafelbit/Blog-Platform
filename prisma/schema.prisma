@@ -13,7 +13,7 @@ model Post {
   blog     String
   catagory String
   date     DateTime? @default(now())
-  image    String
+  image    String?
   nickname String
 }
 
