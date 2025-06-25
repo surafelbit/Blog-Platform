@@ -212,10 +212,13 @@ export default function CreatePost() {
     });
 
     try {
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        body: form,
-      });
+      const res = await fetch(
+        "https://blog-platform-two-omega.vercel.app/app/create-posts",
+        {
+          method: "POST",
+          body: form,
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Something went wrong");
