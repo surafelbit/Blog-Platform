@@ -2,7 +2,15 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
 import { cloudinary } from "@/lib/cloudinary";
-
+function withCORSHeaders(response) {
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+  return response;
+}
+export async function OPTIONS() {
+  return withCORSHeaders(new NextResponse(null, { status: 200 }));
+}
 // GET all posts
 export async function GET() {
   try {
@@ -29,12 +37,14 @@ export async function POST(request) {
     const file = formData.get("image");
 
     if (!title || !blog || !catagory || !nickname || !file) {
-      return NextResponse.json(
-        {
-          error:
-            "All fields (title, blog, catagory, nickname, image) are required",
-        },
-        { status: 400 }
+      return withCORSHeaders(
+        NextResponse.json(
+          {
+            error:
+              "All fields (title, blog, catagory, nickname, image) are required",
+          },
+          { status: 400 }
+        )
       );
     }
 
@@ -60,15 +70,19 @@ export async function POST(request) {
       },
     });
 
-    return NextResponse.json(
-      { message: "Post created successfully", post: newPost },
-      { status: 201 }
+    return withCORSHeaders(
+      NextResponse.json(
+        { message: "Post created successfully", post: newPost },
+        { status: 201 }
+      )
     );
   } catch (error) {
     console.error("Error creating post:", error);
-    return NextResponse.json(
-      { error: "Failed to create post", details: error.message },
-      { status: 500 }
+    return withCORSHeaders(
+      NextResponse.json(
+        { error: "Failed to create post", details: error.message },
+        { status: 500 }
+      )
     );
   }
 }
