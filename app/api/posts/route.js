@@ -36,7 +36,7 @@ export async function POST(request) {
     const nickname = formData.get("nickname");
     const file = formData.get("image");
 
-    if (!title || !blog || !catagory || !nickname || !file) {
+    if (!title || !blog || !catagory || !nickname) {
       return withCORSHeaders(
         NextResponse.json(
           {
