@@ -16,14 +16,33 @@ export async function OPTIONS() {
 
 // GET all posts with CORS headers
 export async function GET() {
+  // try {
+  //   const posts = await prisma.post.findMany();
+  //   return withCORSHeaders(NextResponse.json(posts, { status: 200 }));
+  // } catch (error) {
+  //   return withCORSHeaders(
+  //     NextResponse.json(
+  //       {
+  //         error: "Failed to fetch posts",
+  //         details: error.message,
+  //       },
+  //       { status: 500 }
+  //     )
+  //   );
+  // }
   try {
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+      include: {
+        comments: true, // 👈 Include related comments
+      },
+    });
+
     return withCORSHeaders(NextResponse.json(posts, { status: 200 }));
   } catch (error) {
     return withCORSHeaders(
       NextResponse.json(
         {
-          error: "Failed to fetch posts",
+          error: "Failed to fetch posts with comments",
           details: error.message,
         },
         { status: 500 }
