@@ -91,25 +91,31 @@
           formData.append("image", form.image.files[0]);
 
           try {
-            const res = await fetch("http://localhost:3000/api/external-post", {
-              method: "POST",
-              body: formData,
-            });
-
-            const data = await res.json();
+            const res = await fetch(
+              "https://blog-platform-qqqt.vercel.app/api/posts",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
 
             if (!res.ok) {
-              alert(
-                "Failed to send blog post: " + (data.error || "Unknown error")
-              );
+              const errorData = await res.json().catch(() => null);
+              alert("❌ Failed: " + (errorData?.error || "Unknown error"));
               return;
             }
 
-            alert("Blog post sent successfully!");
-            console.log("Server response:", data);
+            // If it's JSON, parse it safely
+            const isJson = res.headers
+              .get("content-type")
+              ?.includes("application/json");
+            const data = isJson ? await res.json() : null;
+
+            alert("✅ Blog post sent successfully!");
+            console.log("Server response:", data || "No JSON returned.");
           } catch (err) {
             console.error("Error sending blog post:", err);
-            alert("Failed to send blog post: " + err.message);
+            alert("🚨 Error: " + err.message);
           }
         });
     </script>
