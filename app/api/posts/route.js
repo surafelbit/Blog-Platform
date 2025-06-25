@@ -36,7 +36,7 @@ export async function POST(request) {
     const nickname = formData.get("nickname");
     const file = formData.get("image");
 
-    if (!title || !blog || !catagory || !nickname) {
+    if (!title || !blog || !catagory) {
       return withCORSHeaders(
         NextResponse.json(
           {
@@ -47,26 +47,43 @@ export async function POST(request) {
         )
       );
     }
+    let imageUrl = null;
 
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    if (file && typeof file === "object") {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
 
-    const uploadRes = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "blog-posts" }, (error, result) => {
-          if (error) return reject(error);
-          resolve(result);
-        })
-        .end(buffer);
-    });
+      const uploadRes = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream({ folder: "blog-posts" }, (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          })
+          .end(buffer);
+      });
+
+      imageUrl = uploadRes.secure_url;
+    }
+
+    // const arrayBuffer = await file.arrayBuffer();
+    // const buffer = Buffer.from(arrayBuffer);
+
+    // const uploadRes = await new Promise((resolve, reject) => {
+    //   cloudinary.uploader
+    //     .upload_stream({ folder: "blog-posts" }, (error, result) => {
+    //       if (error) return reject(error);
+    //       resolve(result);
+    //     })
+    //     .end(buffer);
+    // });
 
     const newPost = await prisma.post.create({
       data: {
         title,
         blog,
         catagory,
-        image: uploadRes.secure_url,
-        nickname,
+        image: uploadRes.secure_url || null,
+        nickname: nickname || undefined,
       },
     });
 
