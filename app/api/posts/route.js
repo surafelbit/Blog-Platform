@@ -82,7 +82,7 @@ export async function POST(request) {
         title,
         blog,
         catagory,
-        image: uploadRes.secure_url || null,
+        image: imageUrl,
         nickname: nickname || undefined,
       },
     });
