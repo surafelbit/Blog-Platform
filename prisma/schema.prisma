@@ -16,15 +16,29 @@ model Post {
   image    String?
   nickname String?
   comments Comment[]
+  Report   Report[]
 }
+
 model Comment {
-   id      Int      @id @default(autoincrement())
-  content String
-  author  String?  @default("Anonymous")
-  date    DateTime @default(now())
-  post    Post     @relation(fields: [postId], references: [id])
+  id      Int      @id @default(autoincrement())
   postId  Int
+  date    DateTime @default(now())
+  author  String?  @default("Anonymous")
+  content String
+  post    Post     @relation(fields: [postId], references: [id])
 }
+
+model Report {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reason    String?
+  type      String?
+  reporter  String
+  createdat DateTime? @default(now()) @db.Timestamp(6)
+  postid    Int
+  resolved  Boolean?  @default(false)
+  Post      Post      @relation(fields: [postid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_post")
+}
+
 enum Category {
   TECHNOLOGY
   FOOD
