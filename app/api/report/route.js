@@ -9,7 +9,19 @@ function withCORSHeaders(response) {
 }
 export async function GET(req) {
   try {
-  } catch (error) {}
+    const report = await prisma.report.findMany();
+    return withCORSHeaders(NextResponse.json(report, { status: 200 }));
+  } catch (error) {
+    return withCORSHeaders(
+      NextResponse.json(
+        {
+          error: "Failed to fetch posts",
+          details: error.message,
+        },
+        { status: 500 }
+      )
+    );
+  }
 }
 export async function POST(req) {
   try {
