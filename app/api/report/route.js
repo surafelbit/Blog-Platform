@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
-import { error } from "console";
 function withCORSHeaders(response) {
   response.headers.set("Access-Control-Allow-Origin", "*");
   response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   response.headers.set("Access-Control-Allow-Headers", "Content-Type");
   return response;
 }
-export async function GET(req) {
+export async function GET() {
   try {
     const report = await prisma.report.findMany();
     return withCORSHeaders(NextResponse.json(report, { status: 200 }));
