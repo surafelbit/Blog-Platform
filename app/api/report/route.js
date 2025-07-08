@@ -6,6 +6,9 @@ function withCORSHeaders(response) {
   response.headers.set("Access-Control-Allow-Headers", "Content-Type");
   return response;
 }
+export async function OPTIONS() {
+  return withCORSHeaders(new NextResponse(null, { status: 200 }));
+}
 export async function GET() {
   try {
     const report = await prisma.report.findMany();

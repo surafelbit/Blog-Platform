@@ -45,3 +45,9 @@ enum Category {
   TRAVEL
   EDUCATION
 }
+model Admin {
+  id       String   @id @default(cuid())
+  email    String   @unique
+  password String
+  createdAt DateTime @default(now())
+}
