@@ -53,3 +53,35 @@ export async function POST(req) {
     );
   }
 }
+export async function DELETE(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return withCORSHeaders(
+        NextResponse.json({ error: "Missing report id" }, { status: 400 })
+      );
+    }
+
+    // If id is string but your prisma id is Int, parse it accordingly:
+    // const reportId = parseInt(id);
+    const report = await prisma.report.delete({
+      where: {
+        id: id, // or parseInt(id) if id is Int in schema
+      },
+    });
+
+    return withCORSHeaders(
+      NextResponse.json({ message: "Report deleted successfully", report })
+    );
+  } catch (error) {
+    console.log(error);
+    return withCORSHeaders(
+      NextResponse.json({
+        error: "Failed to delete report",
+        details: error.message,
+      })
+    );
+  }
+}
