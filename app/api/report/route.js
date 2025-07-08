@@ -6,9 +6,6 @@ function withCORSHeaders(response) {
   response.headers.set("Access-Control-Allow-Headers", "Content-Type");
   return response;
 }
-export async function OPTIONS() {
-  return withCORSHeaders(new NextResponse(null, { status: 200 }));
-}
 export async function GET() {
   try {
     const report = await prisma.report.findMany();
@@ -66,14 +63,14 @@ export async function DELETE(req) {
 
     // If id is string but your prisma id is Int, parse it accordingly:
     // const reportId = parseInt(id);
-    const report = await prisma.report.delete({
+    const post = await prisma.post.delete({
       where: {
-        id: id, // or parseInt(id) if id is Int in schema
+        id: parseInt(id), // or parseInt(id) if id is Int in schema
       },
     });
 
     return withCORSHeaders(
-      NextResponse.json({ message: "Report deleted successfully", report })
+      NextResponse.json({ message: "Report deleted successfully", post })
     );
   } catch (error) {
     console.log(error);

@@ -15,7 +15,7 @@ model Post {
   date     DateTime? @default(now())
   image    String?
   nickname String?
-  comments Comment[]
+  comments Comment[] 
   Report   Report[]
 }
 
@@ -25,7 +25,7 @@ model Comment {
   date    DateTime @default(now())
   author  String?  @default("Anonymous")
   content String
-  post    Post     @relation(fields: [postId], references: [id])
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Report {
@@ -44,10 +44,4 @@ enum Category {
   FOOD
   TRAVEL
   EDUCATION
-}
-model Admin {
-  id       String   @id @default(cuid())
-  email    String   @unique
-  password String
-  createdAt DateTime @default(now())
 }
