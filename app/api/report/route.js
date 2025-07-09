@@ -1,25 +1,11 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
-const allowedOrigins = [
-  "http://localhost:3000", // user frontend local
-  "http://localhost:3001", // admin frontend local
-  "https://blog-api-gx6u.vercel.app/", // admin prod
-  "https://user.example.com", // user prod
-];
 function withCORSHeaders(response) {
-  const origin = req.headers.get("origin");
-  if (allowedOrigins.includes(origin)) {
-    response.headers.set("Access-Control-Allow-Origin", origin);
-  }
-  // Optional: else don't set, or set some default (not recommended)
-  response.headers.set(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, DELETE"
-  );
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   response.headers.set("Access-Control-Allow-Headers", "Content-Type");
   return response;
 }
-
 export async function OPTIONS() {
   return withCORSHeaders(new NextResponse(null, { status: 200 }));
 }
