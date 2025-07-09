@@ -1,14 +1,25 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
+
+const allowedOrigin = "*";
+
 function withCORSHeaders(response) {
-  response.headers.set("Access-Control-Allow-Origin", "*");
-  response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
+  response.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, DELETE, OPTIONS"
+  );
   response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+  response.headers.set("Access-Control-Allow-Credentials", "true");
   return response;
 }
+
+// Handle preflight requests
 export async function OPTIONS() {
-  return withCORSHeaders(new NextResponse(null, { status: 200 }));
+  return withCORSHeaders(new NextResponse(null, { status: 204 }));
 }
+
+// GET reports
 export async function GET() {
   try {
     const report = await prisma.report.findMany();
@@ -16,43 +27,48 @@ export async function GET() {
   } catch (error) {
     return withCORSHeaders(
       NextResponse.json(
-        {
-          error: "Failed to fetch posts",
-          details: error.message,
-        },
+        { error: "Failed to fetch reports", details: error.message },
         { status: 500 }
       )
     );
   }
 }
+
+// POST new report
 export async function POST(req) {
   try {
     const { reason, type, postId, reporter } = await req.json();
 
-    console.log(reason, type, postId, reporter);
     if (!type || !postId) {
       return withCORSHeaders(
-        NextResponse.json({ error: "Missing Fields" }, { status: 404 })
+        NextResponse.json({ error: "Missing Fields" }, { status: 400 })
       );
     }
+
     const report = await prisma.report.create({
       data: {
-        reason: reason,
-        type: type,
+        reason,
+        type,
         Post: { connect: { id: parseInt(postId) } },
-        reporter: reporter,
+        reporter,
       },
     });
+
     return withCORSHeaders(
-      NextResponse.json({ message: "POST CREATED", report: report })
+      NextResponse.json({ message: "Report created", report }, { status: 201 })
     );
   } catch (error) {
     console.log(error);
     return withCORSHeaders(
-      NextResponse.json({ error: "Error Occured", details: error.message })
+      NextResponse.json(
+        { error: "Error Occurred", details: error.message },
+        { status: 500 }
+      )
     );
   }
 }
+
+// DELETE a report
 export async function DELETE(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -64,24 +80,23 @@ export async function DELETE(req) {
       );
     }
 
-    // If id is string but your prisma id is Int, parse it accordingly:
-    // const reportId = parseInt(id);
-    const post = await prisma.post.delete({
-      where: {
-        id: parseInt(id), // or parseInt(id) if id is Int in schema
-      },
+    const deletedReport = await prisma.report.delete({
+      where: { id: parseInt(id) },
     });
 
     return withCORSHeaders(
-      NextResponse.json({ message: "Report deleted successfully", post })
+      NextResponse.json(
+        { message: "Report deleted", deletedReport },
+        { status: 200 }
+      )
     );
   } catch (error) {
     console.log(error);
     return withCORSHeaders(
-      NextResponse.json({
-        error: "Failed to delete report",
-        details: error.message,
-      })
+      NextResponse.json(
+        { error: "Failed to delete report", details: error.message },
+        { status: 500 }
+      )
     );
   }
 }
