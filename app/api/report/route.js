@@ -82,28 +82,19 @@ export async function DELETE(req) {
     const id = searchParams.get("id");
 
     if (!id) {
-      return withCORSHeaders(
-        NextResponse.json({ error: "Missing report id" }, { status: 400 })
-      );
+      return NextResponse.json({ error: "Missing report id" }, { status: 400 });
     }
 
-    const deletedReport = await prisma.report.delete({
+    const deleted = await prisma.post.delete({
       where: { id: parseInt(id) },
     });
 
-    return withCORSHeaders(
-      NextResponse.json(
-        { message: "Report deleted", deletedReport },
-        { status: 200 }
-      )
-    );
-  } catch (error) {
-    console.log(error);
-    return withCORSHeaders(
-      NextResponse.json(
-        { error: "Failed to delete report", details: error.message },
-        { status: 500 }
-      )
+    return NextResponse.json({ message: "Deleted", deleted });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { error: "Server error", details: err.message },
+      { status: 500 }
     );
   }
 }
