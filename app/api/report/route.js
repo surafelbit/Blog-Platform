@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
+const allowedOrigin = "http://localhost:3000"; // or whatever port your frontend uses locally
+
 function withCORSHeaders(response) {
-  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
   response.headers.set(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, DELETE"
