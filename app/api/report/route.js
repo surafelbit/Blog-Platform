@@ -3,7 +3,7 @@ import prisma from "../../../lib/prisma";
 const allowedOrigins = [
   "http://localhost:3000", // user frontend local
   "http://localhost:3001", // admin frontend local
-  "https://admin.example.com", // admin prod
+  "https://blog-api-gx6u.vercel.app/", // admin prod
   "https://user.example.com", // user prod
 ];
 function withCORSHeaders(response) {
