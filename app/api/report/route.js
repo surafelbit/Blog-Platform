@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
-const allowedOrigin = "http://localhost:3000"; // or whatever port your frontend uses locally
-
+const allowedOrigins = [
+  "http://localhost:3000", // user frontend local
+  "http://localhost:3001", // admin frontend local
+  "https://admin.example.com", // admin prod
+  "https://user.example.com", // user prod
+];
 function withCORSHeaders(response) {
-  response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
+  const origin = req.headers.get("origin");
+  if (allowedOrigins.includes(origin)) {
+    response.headers.set("Access-Control-Allow-Origin", origin);
+  }
+  // Optional: else don't set, or set some default (not recommended)
   response.headers.set(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, DELETE"
