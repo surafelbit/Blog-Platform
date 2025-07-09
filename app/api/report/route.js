@@ -30,7 +30,7 @@ export async function POST(req) {
     const { reason, type, postId, reporter } = await req.json();
 
     console.log(reason, type, postId, reporter);
-    if (!reason || !type || !reporter || !postId) {
+    if (!type || !postId) {
       return withCORSHeaders(
         NextResponse.json({ error: "Missing Fields" }, { status: 404 })
       );
