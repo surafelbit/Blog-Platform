@@ -80,7 +80,7 @@ export async function DELETE(req) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     const all = searchParams.get("all");
-
+    const postId = searchParams.get("postid");
     if (all == "true") {
       const result = await prisma.report.deleteMany();
       return withCORSHeaders(
@@ -95,7 +95,18 @@ export async function DELETE(req) {
         NextResponse.json({ message: "Report Deleted" }, { status: 200 })
       );
     }
-    if (!id) {
+    if (postId) {
+      const result = await prisma.report.deleteMany({
+        where: { postid: parseInt(postId) },
+      });
+      return withCORSHeaders(
+        NextResponse.json(
+          { message: "Post's reports have been deleted" },
+          { status: 200 }
+        )
+      );
+    }
+    if (!id && postId) {
       return NextResponse.json(
         { error: "No report found by that id" },
         { status: 404 }
