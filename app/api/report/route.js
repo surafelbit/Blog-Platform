@@ -23,6 +23,8 @@ export async function OPTIONS() {
     "GET, POST, DELETE, OPTIONS"
   );
   response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+  response.headers.set("Access-Control-Allow-Credentials", "true"); // Add this if needed
+
   return response;
 }
 
