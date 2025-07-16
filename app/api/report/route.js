@@ -75,26 +75,35 @@ export async function POST(req) {
   }
 }
 
-// DELETE a report
 export async function DELETE(req) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+    const all = searchParams.get("all");
 
-    if (!id) {
-      return NextResponse.json({ error: "Missing report id" }, { status: 400 });
+    if (all == "true") {
+      const result = await prisma.report.deleteMany();
+      return withCORSHeaders(
+        NextResponse.json({ message: "All messages deleted" }, { status: 200 })
+      );
     }
-
-    const deleted = await prisma.post.delete({
-      where: { id: parseInt(id) },
-    });
-
-    return NextResponse.json({ message: "Deleted", deleted });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { error: "Server error", details: err.message },
-      { status: 500 }
+    if (id) {
+      const result = await prisma.report.delete({
+        where: { id: id },
+      });
+      return withCORSHeaders(
+        NextResponse.json({ message: "Report Deleted" }, { status: 200 })
+      );
+    }
+    if (!id) {
+      return NextResponse.json(
+        { error: "No report found by that id" },
+        { status: 404 }
+      );
+    }
+  } catch (error) {
+    return withCORSHeaders(
+      NextResponse.json({ message: "error", error: error }, { status: 400 })
     );
   }
 }
