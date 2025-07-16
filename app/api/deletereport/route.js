@@ -34,13 +34,13 @@ export async function DELETE(req) {
     const all = searchParams.get("all");
     const postId = searchParams.get("postid");
     if (all == "true") {
-      const result = await prisma.report.deleteMany();
+      await prisma.report.deleteMany();
       return withCORSHeaders(
         NextResponse.json({ message: "All messages deleted" }, { status: 200 })
       );
     }
     if (id) {
-      const result = await prisma.report.delete({
+      await prisma.report.delete({
         where: { id: id },
       });
       return withCORSHeaders(
@@ -48,7 +48,7 @@ export async function DELETE(req) {
       );
     }
     if (postId) {
-      const result = await prisma.report.deleteMany({
+      await prisma.report.deleteMany({
         where: { postid: parseInt(postId) },
       });
       return withCORSHeaders(
