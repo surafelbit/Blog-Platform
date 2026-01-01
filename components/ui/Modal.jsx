@@ -11,6 +11,7 @@ export default function Modal({ children, onClose }) {
     return () => setMounted(false);
   }, []);
 
+  // commiting while high
   if (!mounted) return null;
 
   return ReactDOM.createPortal(
