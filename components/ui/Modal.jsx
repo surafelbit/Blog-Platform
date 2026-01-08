@@ -12,6 +12,7 @@ export default function Modal({ children, onClose }) {
   }, []);
 
   // commiting while high
+  // lmfao 🤣 🤣 
   if (!mounted) return null;
 
   return ReactDOM.createPortal(
