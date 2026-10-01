@@ -80,11 +80,55 @@ export default function Home() {
           </div>
           <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-5">
             <p className="text-3xl font-bold text-white">1k+</p>
-            <p className="mt-2 text-sm text-slate-300">community interactions</p>
+            <p className="mt-2 text-sm text-slate-300">
+              community interactions
+            </p>
           </div>
           <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-5">
             <p className="text-3xl font-bold text-white">3x</p>
             <p className="mt-2 text-sm text-slate-300">more engagement</p>
+          </div>
+        </div>
+
+        <div className="mt-16 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-8">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-300">
+              How it works
+            </p>
+            <h2 className="mt-4 text-3xl font-bold text-white">
+              Turn a single idea into a content engine.
+            </h2>
+            <ul className="mt-6 space-y-4 text-slate-300">
+              <li className="flex gap-3">
+                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                Draft in minutes with a focused writing experience.
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                Share updates with a clear category and audience-friendly format.
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-1 h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                Keep readers engaged through comments and discussion.
+              </li>
+            </ul>
+          </div>
+
+          <div className="flex flex-col justify-between rounded-3xl border border-cyan-400/30 bg-cyan-500/5 p-8">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-300">
+                Ready to start?
+              </p>
+              <h3 className="mt-4 text-2xl font-bold text-white">
+                Build your next post in minutes.
+              </h3>
+            </div>
+            <a
+              href="/create-posts"
+              className="mt-8 inline-flex rounded-full bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
+            >
+              Start publishing
+            </a>
           </div>
         </div>
       </section>
