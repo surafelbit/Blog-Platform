@@ -1,23 +1,32 @@
 # Blog Platform
 
-A modern blog platform built with Next.js, Prisma, and PostgreSQL for publishing posts and managing discussion.
+A modern publishing app for creating blog posts, collecting feedback, and managing content with a clean admin workflow.
 
-## Features
+## What this app includes
 
-- Create and publish blog posts
-- Upload media through Cloudinary
-- Review comments and report submissions
-- Simple admin-style workflow for content management
+- Post creation and publishing flow
+- Comment and report handling endpoints
+- Cloudinary-ready media uploads
+- Next.js frontend with a polished landing page
+- Prisma integration for database access
 
-## Getting Started
+## Local setup
 
-Install dependencies:
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-Start the development server:
+2. Configure your environment variables for Prisma/PostgreSQL.
+
+3. Run the database setup if needed:
+
+```bash
+npx prisma generate
+```
+
+4. Start the app:
 
 ```bash
 npm run dev
@@ -25,13 +34,13 @@ npm run dev
 
 Open http://localhost:3000 in your browser.
 
-## Useful scripts
+## Useful commands
 
 ```bash
 npm run build
 npm run lint
 ```
 
-## Notes
+## Project notes
 
-This project is configured for a PostgreSQL database and Prisma migrations. If you are running the app locally, make sure your database connection string is configured before starting the application.
+This repository is designed for a small content platform where writers can publish posts, reviewers can manage reports, and the app can be extended with richer moderation and content workflows.
