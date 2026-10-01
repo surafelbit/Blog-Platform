@@ -1,32 +1,41 @@
-
 "use client";
 
 import { useState } from "react";
 
+const initialForm = {
+  title: "",
+  blog: "",
+  catagory: "",
+  image: null,
+  nickname: "",
+};
+
 export default function CreatePost() {
-  const [formData, setFormData] = useState({
-    title: "",
-    blog: "",
-    catagory: "",
-    image: null,
-    nickname: "",
-  });
+  const [formData, setFormData] = useState(initialForm);
+  const [status, setStatus] = useState({ type: "idle", message: "" });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "image") {
-      setFormData({ ...formData, image: files[0] });
+      setFormData((current) => ({ ...current, image: files[0] }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((current) => ({ ...current, [name]: value }));
+    }
+
+    if (status.type !== "idle") {
+      setStatus({ type: "idle", message: "" });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setStatus({ type: "loading", message: "Publishing your post..." });
 
     const form = new FormData();
-    Object.keys(formData).forEach((key) => {
-      form.append(key, formData[key]);
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== "") {
+        form.append(key, value);
+      }
     });
 
     try {
@@ -38,10 +47,14 @@ export default function CreatePost() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Something went wrong");
 
-      alert("Blog posted!");
+      setFormData(initialForm);
+      setStatus({ type: "success", message: "Blog posted successfully!" });
     } catch (err) {
       console.error(err);
-      alert("Failed to post blog.");
+      setStatus({
+        type: "error",
+        message: "Failed to post blog. Please try again.",
+      });
     }
   };
 
@@ -55,13 +68,30 @@ export default function CreatePost() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">
             New post
           </p>
-          <h1 className="mt-2 text-3xl font-bold text-white">Share your story</h1>
+          <h1 className="mt-2 text-3xl font-bold text-white">
+            Share your story
+          </h1>
         </div>
+
+        {status.message ? (
+          <p
+            className={`mb-4 rounded-xl border px-3 py-2 text-sm ${
+              status.type === "success"
+                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-200"
+                : status.type === "error"
+                  ? "border-red-500/40 bg-red-500/10 text-red-200"
+                  : "border-cyan-500/40 bg-cyan-500/10 text-cyan-200"
+            }`}
+          >
+            {status.message}
+          </p>
+        ) : null}
 
         <div className="space-y-4">
           <input
             type="text"
             name="title"
+            value={formData.title}
             placeholder="Post title"
             onChange={handleChange}
             required
@@ -70,6 +100,7 @@ export default function CreatePost() {
 
           <textarea
             name="blog"
+            value={formData.blog}
             placeholder="Write your content here..."
             rows={8}
             onChange={handleChange}
@@ -80,6 +111,7 @@ export default function CreatePost() {
           <input
             type="text"
             name="catagory"
+            value={formData.catagory}
             placeholder="Category"
             onChange={handleChange}
             required
@@ -89,6 +121,7 @@ export default function CreatePost() {
           <input
             type="text"
             name="nickname"
+            value={formData.nickname}
             placeholder="Your nickname"
             onChange={handleChange}
             required
@@ -96,7 +129,9 @@ export default function CreatePost() {
           />
 
           <label className="block">
-            <span className="mb-2 block text-sm text-slate-300">Cover image</span>
+            <span className="mb-2 block text-sm text-slate-300">
+              Cover image
+            </span>
             <input
               type="file"
               name="image"
@@ -110,9 +145,10 @@ export default function CreatePost() {
 
         <button
           type="submit"
-          className="mt-6 w-full rounded-full bg-cyan-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300"
+          disabled={status.type === "loading"}
+          className="mt-6 w-full rounded-full bg-cyan-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          Publish post
+          {status.type === "loading" ? "Publishing..." : "Publish post"}
         </button>
       </form>
     </main>
