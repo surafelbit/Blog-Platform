@@ -72,6 +72,21 @@ export default function Home() {
             </p>
           </article>
         </div>
+
+        <div className="mt-12 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-5">
+            <p className="text-3xl font-bold text-white">24/7</p>
+            <p className="mt-2 text-sm text-slate-300">Publishing workflow</p>
+          </div>
+          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-5">
+            <p className="text-3xl font-bold text-white">1k+</p>
+            <p className="mt-2 text-sm text-slate-300">community interactions</p>
+          </div>
+          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-5">
+            <p className="text-3xl font-bold text-white">3x</p>
+            <p className="mt-2 text-sm text-slate-300">more engagement</p>
+          </div>
+        </div>
       </section>
     </main>
   );
