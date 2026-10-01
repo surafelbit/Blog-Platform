@@ -1,19 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 
 export default function Modal({ children, onClose }) {
   const [mounted, setMounted] = useState(false);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
+
     const handleKeyDown = (event) => {
       if (event.key === "Escape") onClose?.();
     };
 
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
+
+    const focusable = modalRef.current?.querySelector(
+      'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])',
+    );
+    focusable?.focus();
 
     return () => {
       setMounted(false);
@@ -26,12 +33,13 @@ export default function Modal({ children, onClose }) {
 
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
+        ref={modalRef}
         className="relative max-w-3xl rounded-2xl bg-white p-6 shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
@@ -46,6 +54,6 @@ export default function Modal({ children, onClose }) {
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
