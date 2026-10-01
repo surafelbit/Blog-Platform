@@ -8,25 +8,44 @@ export default function Modal({ children, onClose }) {
 
   useEffect(() => {
     setMounted(true);
-    return () => setMounted(false);
-  }, []);
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") onClose?.();
+    };
 
-  // commiting while high
-  // lmfao 🤣 🤣 
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      setMounted(false);
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
   if (!mounted) return null;
 
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
     >
       <div
-        className="bg-white p-6 rounded-lg shadow-lg max-w-3xl"
-        onClick={(e) => e.stopPropagation()}
+        className="relative max-w-3xl rounded-2xl bg-white p-6 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
       >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close modal"
+          className="absolute right-4 top-4 rounded-full border border-slate-300 px-2 py-1 text-sm text-slate-600 transition hover:bg-slate-100"
+        >
+          ✕
+        </button>
         {children}
       </div>
     </div>,
-    document.body // This works perfectly in Next.js App Router
+    document.body
   );
 }
