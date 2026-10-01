@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
-//
+
 const allowedOrigin = "*";
 
 function withCORSHeaders(response) {
@@ -14,59 +14,51 @@ function withCORSHeaders(response) {
   return response;
 }
 
-// Handle preflight requests
 export async function OPTIONS() {
-  const response = new NextResponse(null, { status: 204 });
-  response.headers.set("Access-Control-Allow-Origin", "*");
-  response.headers.set(
-    "Access-Control-Allow-Methods",
-    "GET, POST, DELETE, OPTIONS"
-  );
-  response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-  response.headers.set("Access-Control-Allow-Credentials", "true"); // Add this if needed
-
-  return response;
+  return withCORSHeaders(new NextResponse(null, { status: 204 }));
 }
+
 export async function DELETE(req) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     const all = searchParams.get("all");
     const postId = searchParams.get("postid");
-    if (all == "true") {
+
+    if (all === "true") {
       await prisma.report.deleteMany();
       return withCORSHeaders(
-        NextResponse.json({ message: "All messages deleted" }, { status: 200 })
+        NextResponse.json({ message: "All reports deleted" }, { status: 200 })
       );
     }
+
     if (id) {
       await prisma.report.delete({
-        where: { id: id },
+        where: { id },
       });
       return withCORSHeaders(
-        NextResponse.json({ message: "Report Deleted" }, { status: 200 })
+        NextResponse.json({ message: "Report deleted" }, { status: 200 })
       );
     }
+
     if (postId) {
       await prisma.report.deleteMany({
-        where: { postid: parseInt(postId) },
+        where: { postid: parseInt(postId, 10) },
       });
       return withCORSHeaders(
         NextResponse.json(
-          { message: "Post's reports have been deleted" },
+          { message: "Post reports deleted" },
           { status: 200 }
         )
       );
     }
-    if (!id && postId) {
-      return NextResponse.json(
-        { error: "No report found by that id" },
-        { status: 404 }
-      );
-    }
+
+    return withCORSHeaders(
+      NextResponse.json({ error: "No report identifier provided" }, { status: 404 })
+    );
   } catch (error) {
     return withCORSHeaders(
-      NextResponse.json({ message: "error", error: error }, { status: 400 })
+      NextResponse.json({ message: "Something went wrong", error: String(error) }, { status: 400 })
     );
   }
 }
