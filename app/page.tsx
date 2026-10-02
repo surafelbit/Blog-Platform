@@ -16,6 +16,10 @@ export default function Home() {
             and turning conversations into momentum.
           </p>
 
+          <p className="mt-4 inline-flex rounded-full border border-cyan-400/20 bg-cyan-500/5 px-3 py-1 text-sm text-cyan-200">
+            Built for creators who want thoughtful feedback and steady growth.
+          </p>
+
           <div className="mt-8 flex flex-wrap gap-4">
             <a
               href="/create-posts"
