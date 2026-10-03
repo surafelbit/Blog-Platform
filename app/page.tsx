@@ -20,6 +20,11 @@ export default function Home() {
             Built for creators who want thoughtful feedback and steady growth.
           </p>
 
+          <p className="mt-5 max-w-lg text-sm leading-6 text-slate-300">
+            New updates are live: draft faster, publish with confidence, and keep
+            your audience engaged from first post to final discussion.
+          </p>
+
           <div className="mt-8 flex flex-wrap gap-4">
             <a
               href="/create-posts"
